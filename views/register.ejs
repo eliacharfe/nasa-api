@@ -1,0 +1,81 @@
+<%- include('includes/head.ejs') %>
+
+<body class="bg-secondary" >
+<div class="container bg-dark myborder ">
+
+    <div class="row">
+        <div class="col-xl-4 col-md-3 "></div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card border myborder border-info border-3  bg-light mt-4 mb-4">
+                <div class="card-body">
+                    <p class="alert alert-danger <% if (msg === "") { %> d-none <% } %>"><strong><%= msg %> </strong></p>
+
+                    <nav class="navbar navbar-expand-lg navbar-light backInfo border border-primary myborder py-0 mb-2">
+                        <div class="container-fluid mb-2 ">
+                            <h3 class=" navbar-text text-white  rounded mb-0 "><%= title %></h3>
+                        </div>
+                    </nav>
+                    <img src="https://c.tenor.com/WbLLhduoplUAAAAC/capoo-bugcat.gif"
+                         class="card-img-top myborder imgGif <% if (msg !== '') { %> d-none <% } %>" alt="..." >
+
+                    <!-- FORM-->
+                    <form action="/password" method="post" id="ajaxValidationRegisterPost"
+                          autocomplete="on" class="ml-3 mb-1 mr-3">
+
+                        <div class="mb-2"><!--Email-->
+                            <label for="email" class="form-label">Email address</label>
+                            <span class="star text-danger">*</span>
+                            <span> <img src="data:image/png;base64,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"
+                                        class="card-img-top myborder imgLogo"   alt="..." ></span>
+                            <input type="email" name="email" class="form-control myborder myinput" id="email"
+                                   placeholder="Enter your email here" autocomplete="true" required>
+                            <!--      pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"-->
+                            <!--    title="format example: dani22@gmail.com
+                                     any lowercase/uppercase/numbers + '@" + any lower/uppercase + '.' + 2 or 3 any lower/uppercase-->
+                            <div class="text-danger errormessage"></div>
+                        </div>
+
+                        <div class="mb-2"><!--First name-->
+                            <label for="firstName" class="form-label">First name</label>
+                            <span class="star text-danger">*</span>
+                            <span> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThO6Z1SVPB6ZzVhAGvyX9PUfv-v9jaSKRsrQKeLuSS76I9_SMQiKomVPNKj1s-alJV3Zc&usqp=CAU"
+                                        class="card-img-top myborder imgLogo "  alt="..." ></span>
+                            <input type="text" name="firstName" class="form-control myborder myinput" id="firstName"
+                                   placeholder="Enter your first name" autocomplete="on"
+                                   pattern="^[A-Za-z.\s_-]+$"
+                                   title="Only uppercase or lowercase letters" required>
+                            <div class="text-danger errormessage"></div>
+                        </div>
+
+                        <div class="mb-2"><!--Last name-->
+                            <label for="lastName" class="form-label">Last name</label>
+                            <span class="star text-danger">*</span>
+                            <span> <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThO6Z1SVPB6ZzVhAGvyX9PUfv-v9jaSKRsrQKeLuSS76I9_SMQiKomVPNKj1s-alJV3Zc&usqp=CAU"
+                                        class="card-img-top myborder imgLogo behind"  alt="..." ></span>
+                            <input type="text" name="lastName" class="form-control myborder myinput" id="lastName"
+                                   placeholder="Enter your last name" autocomplete="on"
+                                   pattern="^[A-Za-z.\s_-]+$"
+                                   title="Only uppercase or lowercase letters" required>
+                            <div class="text-danger errormessage"></div>
+                        </div>
+
+                        <input type="submit" name="submitReg" id="submitReg" value="Next"
+                               class="btn btn-block  border border-primary  mybtn backInfo btn-active-bg-shade-amount mr-3  w-100"
+                               data-toggle="tooltip" data-placement="top"
+                               title="Note: you'll have only 1 minute to register a password!">
+                        <div class="mt-2 mb-0 ">
+                            <p class="text-center"><i>Already have an account? </i><a href="/">Login here</a></p>
+                        </div>
+                    </form>
+
+                </div>
+                <img src="https://i.gifer.com/TEcu.gif" class="card-img-top myborder" alt="...">
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-3 "></div>
+    </div>
+</div>
+
+<%- include('includes/end.ejs') %>

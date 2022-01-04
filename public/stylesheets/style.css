@@ -1,0 +1,172 @@
+
+body{
+  padding: 50px;
+}
+a{
+  color: #00B7FF;
+  text-decoration:none !important;
+}
+h1,h2,h3,h4{
+  font-family: 'Kaushan Script', cursive;
+}
+
+.myborder {
+ border-radius: 1.1rem;
+}
+.myform{
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 1rem;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 1.1rem;
+  outline: 0;
+  max-width: 500px;
+}
+
+.mybtn{
+  border-radius:50px; !important;
+}
+
+.mydiv{
+  /*height: 800px;*/
+  height: 94%;
+}
+
+.login-or {
+  position: relative;
+  color: #aaa;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.span-or {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  margin-left: -25px;
+  background-color: #e3f2fd;
+  width: 50px;
+  text-align: center;
+}
+.hr-or {
+  height: 1px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.imgGif {
+  width: 50px;
+  height: auto;
+  margin-left: 42%;
+  margin-right: auto;
+}
+
+.imgLogo{
+  float: right;
+  width: 50px;
+  height: auto;
+  margin-bottom: 4px;
+}
+
+.backInfo{
+  background-color: #00ACC1;
+}
+.backInfo:hover {
+  background-color:  #0097A7;
+}
+
+.btnDelete {
+  /*border-radius: 25px;*/
+  margin-right: 7px;
+}
+
+.backColorSavedImg {
+  background-color: #9ec9f3;
+}
+.backColorSavedImg:hover {
+  background-color: #7cb1e6;
+}
+
+.image {
+  /*width: 800px; height: 180px;*/
+  margin-right: 50px;
+  margin-left: 50px;
+}
+
+.my-grey{
+  background-color : grey;
+  color : white;
+  border-color: black;
+  border-width: 2px;
+}
+
+.btn-grey{
+  background-color : grey;
+  color : white;
+  border-color: black;
+  border-width: 2px;
+}
+
+.btn-grey:hover{
+  background-color: #e3f2fd;
+}
+
+.myinput{
+}
+.myinput:hover{
+  background-color: #9ec9f3;
+}
+
+.mycard{}
+.mycard:hover {
+  background-color: lightcyan;
+}
+
+.myborder-5 {}
+.myborder-5:hover {
+  border-color: black;
+  border-width: 3px;
+}
+
+form .error {
+  color: #ff0000;
+}
+
+
+/*body {*/
+/*  padding: 50px;*/
+/*  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
+/*}*/
+
+/*a {*/
+/*  color: #00B7FF;*/
+/*}*/
+
+/*.myborder {*/
+/*  border-radius: 1.1rem;*/
+/*}*/
+
+
+
+/*.signupBtn {*/
+/*  color:#666;*/
+/*  width:100%;*/
+/*  height:40px;*/
+/*  border: 2px solid lightgrey;*/
+/*}*/
+
+/*.signupBtn:hover{*/
+/*  !*background-color: #aaaaaa;*!*/
+/*  color: dodgerblue;*/
+/*  border: 3px dodgerblue;*/
+
+/*}*/

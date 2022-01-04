@@ -1,0 +1,253 @@
+<%- include('includes/head.ejs') %>
+
+<body class="bg-light" style="padding: 0px;">
+<nav class="navbar navbar-expand-lg navbar-light backInfo">
+
+    <div class="container-fluid"><!--Home navigate-->
+        <a class="navbar-brand" href="#">Nasa API</a>
+        <a class="navbar-brand" href="#" >Home</a>
+
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0"> <!--Who is submitting at the navigation bar-->
+                <li class="nav-item">
+                    <a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#myModalDetailsNav">
+                        Your profile</a>
+
+                <li class="nav-text ">
+                    <a class="nav-link disabled text-white" href="#" tabindex="-1"
+                       aria-disabled="true">Welcome <%= firstname %> <%= lastname %></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link btn btn-light me-2 " href="/logout">Logout</a>
+                </li>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--------------------->
+<div class="text-center">
+
+    <div class="card bg-dark text-white ml-5 mr-5 mt-3 image">
+        <img src="https://imgix.bustle.com/uploads/image/2020/3/4/f5bbc6e9-59cb-4c4a-b10c-3a81dedf21b6-pia23623-16.jpg?w=2000&h=640&fit=crop&crop=faces&auto=format%2Ccompress"
+             class="card-img " alt="..." width="30" height="200">
+
+        <div class="card-img-overlay">
+            <div class="card-body">
+                <h3 class="card-title">Mars images browser</h3>
+                <p class="card-text">Browse NASA Mars images and save your preferred ones</p>
+                <a class="btn btn-grey" role="button" data-bs-toggle="modal" data-bs-target="#myModal">Whom am I</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center" id="loading"></div>
+
+    <p></p>
+</div>
+<!------------------------------------------------->
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-6 ">
+
+            <nav class="navbar navbar-expand-lg navbar-light backInfo border border-primary myborder py-0 mb-2">
+                <div class="container">
+                    <h4 class="navbar-text text-white rounded mb-0">Search for Images:</h4>
+                </div>
+            </nav>
+
+                <form action="/api" class="mb-3" id="myForm" method="post" autocomplete="on">
+                    <div class="mb-2"><!--form-group-->
+                        <label for="date" class="form-label">Date (YYYY-MM-DD) or Sol</label>
+                        <input type="text" class="form-control myborder myinput" id="date" placeholder="Enter a date"
+                               autocomplete="on" >
+                        <div class="text-danger errormessage" ></div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="mission">Select Mission</label>
+                        <select class="form-select myborder myinput mb-2 mt-2" id="mission" aria-label="Floating label select example">
+                            <option selected>Choose a mission</option>
+                            <option value="Curiosity">Curiosity</option>
+                            <option value="Opportunity">Opportunity</option>
+                            <option value="Spirit">Spirit</option>
+                        </select>
+                        <div class="text-danger errormessage" ></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="camera">Select Camera</label>
+                        <select class="form-select myborder myinput mt-2" id="camera" aria-label="Floating label select example">
+                            <option selected id="select">Choose a camera</option>
+                            <option value="FHAZ">FHAZ</option>
+                            <option value="RHAZ">RHAZ</option>
+                            <option value="MAST">MAST</option>
+                            <option value="CHEMCAM">CHEMCAM</option>
+                            <option value="MAHLI">MAHLI</option>
+                            <option value="MARDI">MARDI</option>
+                            <option value="NAVCAM">NAVCAM</option>
+                            <option value="PANCAM">PANCAM</option>
+                            <option value="MINITES">MINITES</option>
+                        </select>
+                        <div class="text-danger errormessage" ></div>
+                    </div>
+
+                    <input type="submit" class="btn mb-2 btn-active-bg-shade-amount backInfo text-white" value="Search">
+                    <!--                <button type="button" class="btn btn-outline-info mb-3" id="searchBtn">Search</button>-->
+                    <button type="reset" class="btn mb-2 btn-active-bg-shade-amount backInfo text-white" id="clearBtn">Clear</button>
+                </form>
+
+        </div>
+
+        <div class="col-lg-6 ">
+            <nav class="navbar navbar-light border border-info backColorSavedImg myborder py-0 mb-3">
+                <div class="container rounded">
+                    <h4 class="navbar-text text-primary mb-0">Saved Images</h4>
+                </div>
+            </nav>
+
+            <button class="btn btn-danger mb-2" id="clearSavedImg">Clear</button>
+            <button class="btn btn-outline-primary mb-2" id="slideShow">Start Slide Show</button>
+            <button class="btn btn-outline-primary mb-2" id="stopSlideShow">Stop Slide Show</button>
+
+            <ol id="infos"></ol>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-3 col-md-2"></div>
+    <!--Carousel-------------------------------------------------------->
+    <div class="col-xl-6 col-md-8">
+        <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators" id="indicator">
+            </div>
+            <div class="carousel-inner " id="innerCarousel">
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-2"></div>
+</div>
+
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light backInfo border border-primary myborder py-0 mb-3">
+        <div class="container">
+            <h4 class="navbar-text text-white rounded-3 mb-0">Search result:</h4>
+        </div>
+    </nav>
+
+
+
+    <div class="row">
+        <div class="col">
+            <div id="imagesOutput1"></div>
+            <div class="row-fluid d-none" id="warning">
+                <nav class="navbar navbar-expand-lg navbar-light bg-warning myborder py-0 mb-3">
+                    <div class="container">
+                        <span class="navbar-text h4 rounded mb-0">No Images Found</span>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="col">
+            <div id="imagesOutput2"></div>
+        </div>
+        <div class="col">
+            <div id="imagesOutput3"></div>
+        </div>
+    </div>
+    <p><br><br></p>
+</div>
+
+<!--Modal personal details---------------------------------------------------------->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content myborder">
+            <!-- Modal Header -->
+            <div class="modal-header my-grey myborder">
+                <h5 class="modal-title ">My Contact Details</h5>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Name: Eliachar Feig
+                    <br>Email: eliacharfe@edu.hac.ac.il
+                    <br>ID: 302278338
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--------------------------------------------------------->
+<!-- Modal saved images-->
+<div class="modal fade" tabindex="-1" role="dialog" id="saveModal">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content border border-info  rounded-3">
+            <!-- Modal Header -->
+            <div class="modal-header backInfo">
+                <h5 class="modal-title ">Saved Modal</h5>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p> This image is already saved!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn backInfo text-white" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---------------------------------------------------------->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModalDetailsNav">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content  border border-info  myborder">
+            <!-- Modal Header -->
+            <div class="modal-header backInfo text-white myborder">
+                <h5 class="modal-title text-center">Your Profile</h5>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Name: <%= firstname %> <%= lastname %>
+                    <br>Email: <%= email %>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn backInfo text-white" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</li>
+<!-------------------------------------------->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
+
+
+
+
+
+
