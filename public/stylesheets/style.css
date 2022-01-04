@@ -2,6 +2,13 @@
 body{
   padding: 50px;
 }
+
+@media (max-width: 978px) {
+  body {
+    padding:0;
+  }
+}
+
 a{
   color: #00B7FF;
   text-decoration:none !important;
@@ -96,7 +103,6 @@ h1,h2,h3,h4{
 }
 
 .btnDelete {
-  /*border-radius: 25px;*/
   margin-right: 7px;
 }
 
