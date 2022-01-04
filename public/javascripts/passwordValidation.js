@@ -46,7 +46,7 @@ const pwdValidationModule = (() => {
     //-----------------------------------------------
     const validateInput = (inputElement, validateFunc) => {
         let v = validateFunc(inputElement.value); // call the validation function
-        inputElement.nextElementSibling.innerHTML = v.isValid ? '' : v.message; // display the error message
+        inputElement.nextElementSibling.innerHTML = v.isValid ? NONE : v.message; // display the error message
         if (v.isValid)
             inputElement.classList.remove("is-invalid")
         else {
