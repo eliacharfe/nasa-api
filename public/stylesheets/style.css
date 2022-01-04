@@ -13,6 +13,17 @@ h1,h2,h3,h4{
 .myborder {
  border-radius: 1.1rem;
 }
+
+.image-background {
+  background-image: url('https://i.natgeofe.com/n/d305ca31-b15c-4c12-8a5d-2ee80f532f6f/00000163-92fc-dc54-a7e7-b2fc87730000_square.jpg');
+  background-size: cover;
+}
+
+.image-background-login {
+  background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKoqjBmkUUzwyDarfmajQIzVd4ckp8a9D6fQ&usqp=CAU');
+  background-size: cover;
+}
+
 .myform{
   position: relative;
   display: -ms-flexbox;
@@ -22,7 +33,7 @@ h1,h2,h3,h4{
   flex-direction: column;
   width: 100%;
   pointer-events: auto;
-  background-color: #fff;
+  background-color: #e3f2fd;
   background-clip: padding-box;
   border: 1px solid rgba(0,0,0,.2);
   border-radius: 1.1rem;
