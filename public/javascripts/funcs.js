@@ -1,16 +1,20 @@
 "use strict";
 
-const APIKEY = 'UsppJXiLnEkRVSJzaCP92eXcCZsZAnYAyM8AomWZ';
+const APIKEY = 'UsppJXiLnEkRVSJzaCP92eXcCZsZAnYAyM8AomWZ',
+    MANIFESTS = 'https://api.nasa.gov/mars-photos/api/v1/manifests/',
+    ROVER = 'https://api.nasa.gov/mars-photos/api/v1/rovers/';
 const SAVE_URL = '/api/save', EXTRACT_URL = '/api/extract', CLEAR_URL = '/api/clear',
     DELETE_URL = '/api/delete/', EMPTY_BODY = JSON.stringify({});
 const REQUIRED_AFTER = 'The mission you have selected required a date after ',
     REQUIRED_BEFORE = 'The mission you have selected required a date before max date: ',
     REQUIRED_BEFORE_SOL = 'The mission you have selected required a date before max sol: ',
-    INVALID_FORMAT = 'Please enter a valid format of date',
-    NOT_EXIST_DATE = 'This date does not exist',
-    INPUT_REQUIRED = 'Input is required here',
-    SERVER_ERR = "Sorry, cannot connect to NASA server...", NONE = '';
+    INVALID_FORMAT = 'Please enter a valid format of date', NOT_EXIST_DATE = 'This date does not exist',
+    INPUT_REQUIRED = 'Input is required here', SERVER_ERR = "Sorry, cannot connect to NASA server...", NONE = '';
 const LOAD_IMG_SRC = "<img src=https://64.media.tumblr.com/ec18887811b3dea8c69711c842de6bb9/tumblr_pabv7lGY7r1qza1qzo1_500.gifv  alt='...' >";
+const HEADERS = {"Content-Type": "application/json"},
+    BTN_DELETE = 'btn btn-danger btnDelete',
+    BTN_SAVE = 'btn backInfo text-white ml-2 mr-2',
+    BTN_SAVED = 'btn btn-warning';
 let LANDING_DATE_CURIOSITY, MAX_DATE_CURIOSITY, MAX_SOL_CURIOSITY,
     LANDING_DATE_OPPORTUNITY, MAX_DATE_OPPORTUNITY, MAX_SOL_OPPORTUNITY,
     LANDING_DATE_SPIRIT, MAX_DATE_SPIRIT, MAX_SOL_SPIRIT;
@@ -23,7 +27,7 @@ const initModule = (() => {
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("myForm").addEventListener('submit', myModule.searchMarsPhotos);
         myModule.querySelect('#clearSavedImg')
-            .addEventListener('click', myModule.fetchClear);
+            .addEventListener('click', myModule.clearAllImages);
         myModule.querySelect('#clearBtn').addEventListener('click', function () {
             myModule.querySelect("#myForm").reset();
             myModule.resetErrors();
@@ -31,11 +35,11 @@ const initModule = (() => {
         });
         myModule.querySelect('#slideShow').addEventListener('click', myModule.slideShow);
         myModule.querySelect('#stopSlideShow').addEventListener('click', function () {
-            myModule.querySelect('#innerCarousel').innerHTML = '';
-        });
-
+            myModule.querySelect('#innerCarousel').innerHTML = NONE;
+        })
+        //-----------------------------------------------------
         /** executing 3 fetches to get the dates of every rover (landing date, max earth date, max sol day) */
-        fetch(`https://api.nasa.gov/mars-photos/api/v1/manifests/Curiosity?api_key=${APIKEY}`)
+        fetch(`${MANIFESTS}Curiosity?api_key=${APIKEY}`)
             .then(status).then(json).then(function (res) {
             LANDING_DATE_CURIOSITY = res.photo_manifest.landing_date;
             MAX_DATE_CURIOSITY = res.photo_manifest.max_date;
@@ -46,7 +50,7 @@ const initModule = (() => {
             MAX_SOL_CURIOSITY = 3302
         });
 //------------------------------------
-        fetch(`https://api.nasa.gov/mars-photos/api/v1/manifests/Opportunity?api_key=${APIKEY}`)
+        fetch(`${MANIFESTS}Opportunity?api_key=${APIKEY}`)
             .then(status).then(json).then(function (res) {
             LANDING_DATE_OPPORTUNITY = res.photo_manifest.landing_date;
             MAX_DATE_OPPORTUNITY = res.photo_manifest.max_date;
@@ -57,7 +61,7 @@ const initModule = (() => {
             MAX_SOL_OPPORTUNITY = 5111;
         });
 //------------------------------------
-        fetch(`https://api.nasa.gov/mars-photos/api/v1/manifests/Spirit?api_key=${APIKEY}`)
+        fetch(`${MANIFESTS}Spirit?api_key=${APIKEY}`)
             .then(status).then(json).then(function (res) {
             LANDING_DATE_SPIRIT = res.photo_manifest.landing_date;
             MAX_DATE_SPIRIT = res.photo_manifest.max_date;
@@ -104,7 +108,7 @@ const validationModule = (() => {
     const validateInput = (inputElement, validateFunc) => {
         let errorElement = inputElement.nextElementSibling; // the error message div
         let v = validateFunc(inputElement.value); // call the validation function
-        errorElement.innerHTML = v.isValid ? '' : v.message; // display the error message
+        errorElement.innerHTML = v.isValid ? NONE : v.message; // display the error message
         v.isValid ? inputElement.classList.remove("is-invalid") : inputElement.classList.add("is-invalid");
         return v.isValid;
     }
@@ -123,22 +127,22 @@ const validationModule = (() => {
         let v2 = validateInput(mission, isNotNullInput);
         let v3 = validateInput(cam, isNotNullInput);
         let v4;
-        let v = v1 && v2 && v3;
+        let valid = v1 && v2 && v3;
 
         if (v1) {
             v4 = validateInput(dateInp, validDate);
             if (!v4) {
                 dateInp.value = NONE;
-                v = false;
+                valid = false;
             } else if (v4 && !validateInput(dateInp, isExistDate)) {
                 dateInp.value = NONE;
-                v = false;
+                valid = false;
             }
         }
         if (v2 && !validateInput(mission, validMissionDate))
-            v = false;
+            valid = false;
 
-        return v;
+        return valid;
     }
 //---------------------------------
     /** a validation function that get the rover and validate its date (according to the date input)
@@ -165,7 +169,7 @@ const validationModule = (() => {
             }
         }
 
-        return {isValid: true, message: ''}
+        return {isValid: true, message: NONE}
     }
     //-------------------------------
     /** returns accurate data dates of the mission selected (according to the 3 start fetches)
@@ -303,7 +307,7 @@ const classesModule = (() => {
                     <p class="card-text">Sol: ${this.sol}</p>
                     <p class="card-text">Camera: ${this.camera}</p>
                     <p class="card-text">Mission: ${this.mission}</p>
-                    <button class="btn backInfo text-white ml-2 mr-2">Save</button>
+                    <button class='btn backInfo text-white ml-2 mr-2'>Save</button>
                     <a href=${this.image_src} target="_blank">
                        <button class="btn btn-primary ml-2 mr-2">Full size</button>
                     </a>
@@ -394,7 +398,7 @@ const myModule = (() => {
      * @param cam  - the input element that includes the camera
      * @returns {string} - the correct URL to fetch */
     const getURL = function (dateInp, mission, cam) {
-        const roverURL = `https://api.nasa.gov/mars-photos/api/v1/rovers/${mission}/photos?`;
+        const roverURL = `${ROVER}${mission}/photos?`;
         const params = new URLSearchParams();
         params.append('camera', `${cam}`);
         params.append('api_key', `${APIKEY}`);
@@ -427,6 +431,7 @@ const myModule = (() => {
         // if got here the inputs are correct
         loadingImg.style.display = "block";
         loadingImg.innerHTML = LOAD_IMG_SRC;
+        imgList.empty(); // will empty the list
 
         dateInp = dateInp.value.trim();
         mission = mission.value.trim();
@@ -434,19 +439,17 @@ const myModule = (() => {
 
         fetch(getURL(dateInp, mission, cam))
             .then(initModule.status).then(initModule.json).then(function (res) {
-            // console.log(res);
             res.photos.forEach(p => {
                 imgList.add(new classesModule.Image(p.img_src, dateInp, p.id, mission, cam, p.earth_date, p.sol));
             });
             imgList.generateHTML();
-            addListeners("btn backInfo text-white ml-2 mr-2");
-        })
-            .catch(function (err) {
-                console.log(err.message);
-                querySelect("#imagesOutput1").innerHTML = SERVER_ERR;
-                querySelect('#loading').innerHTML = NONE;
-            });
-        imgList.empty(); // will empty the list
+            addListeners(BTN_SAVE);
+            showSavedImgBtns();
+        }).catch(function (err) {
+            console.log(err.message);
+            querySelect("#imagesOutput1").innerHTML = SERVER_ERR;
+            querySelect('#loading').innerHTML = NONE;
+        });
     }
 //----------------------------
     /** for more readable syntax
@@ -466,11 +469,10 @@ const myModule = (() => {
     //--------------------------------------
     /** add listeners to the save/delete buttons of the DOM inserted photos (every card has a such button) */
     const addListeners = function (className) {
-        let buttonsSave = document.getElementsByClassName(className);// "btn btn-info ml-2 mr-2"
-        for (let btn of buttonsSave) {
-            className === "btn btn-danger btnDelete" ? btn.addEventListener('click', fetchDelete)
-                : btn.addEventListener('click', saveImageToList);
-        }
+        const buttons = document.getElementsByClassName(className);
+        const func = className === BTN_DELETE ? deleteImage : saveImage;
+        for (let btn of buttons)
+            btn.addEventListener('click', func);
     }
     //--------------------------------
     /** creates a DOM element
@@ -494,40 +496,27 @@ const myModule = (() => {
     /** reset errors to none errors */
     const resetErrors = function () {
         document.querySelectorAll(".is-invalid").forEach((e) => e.classList.remove("is-invalid"));
-        document.querySelectorAll(".errormessage").forEach((e) => e.innerHTML = "");
+        document.querySelectorAll(".errormessage").forEach((e) => e.innerHTML = NONE);
     }
     //-----------------------------
     /** clear the outputs of the DOM */
     const clearOutput = function () {
-        querySelect('#imagesOutput1').innerHTML = '';
-        querySelect('#imagesOutput2').innerHTML = '';
-        querySelect('#imagesOutput3').innerHTML = '';
+        querySelect('#imagesOutput1').innerHTML = NONE;
+        querySelect('#imagesOutput2').innerHTML = NONE;
+        querySelect('#imagesOutput3').innerHTML = NONE;
         querySelect('#warning').className = "row-fluid d-none";
     }
     //---------------------------------------
     /** save an image and its details at the list of saved images (only if that image is not saved yet)
      * @param btn - the button pressed (a Save button of a card element at the DOM) */
-    const saveImageToList = function (btn) {
+    const saveImage = function (btn) {
         const id = btn.target.parentElement.getElementsByTagName('p')[0].innerHTML;
-        btn.target.click();
-        // let exist = false;
-        // const savedListImg = querySelect('#infos').querySelectorAll('li');
-        // savedListImg.forEach(li => { // check if the image user want to save is already exist
-        //     if (li.id === id) exist = true;
-        // });
-        // if (exist) {
-        //     btn.target.setAttribute('data-bs-toggle', 'modal');
-        //     btn.target.setAttribute('data-bs-target', '#saveModal');
-        //     btn.target.click();
-        //     return;
-        // }
-
         imgList.foreach(img => {
             if (id === img.id.toString()) {
                 let body = JSON.stringify({
                     "img_id": id, "img_src": img.image_src,
                     "earth_date": img.earth_date, "sol": img.sol, "camera": img.camera
-                })
+                });
                 fetchAction(SAVE_URL, 'POST', body, btn);
             }
         });
@@ -542,11 +531,8 @@ const myModule = (() => {
      */
     const fetchAction = function (url, method, body, btn) {
 
-        fetch(url, {
-            method: method,
-            headers: {"Content-Type": "application/json"},
-            body: body
-        }).then(initModule.status).then(initModule.json)
+        fetch(url, {method: method, headers: HEADERS, body: body})
+            .then(initModule.status).then(initModule.json)
             .then(function (res) {
                 if (res.status === 404)
                     window.location = "/logout";
@@ -555,25 +541,29 @@ const myModule = (() => {
                     res.forEach(img => {
                         createLi(img);
                     });
-                    addListeners("btn btn-danger btnDelete");
+                    addListeners(BTN_DELETE);
                 } else if (body === EMPTY_BODY) {
                     fetchAction(EXTRACT_URL, 'GET');
-                } else {
-                    if (res.createNew === "notCreateNew") {
-                        console.log("exist: ")
-                        btn.target.setAttribute('data-bs-toggle', 'modal');
-                        btn.target.setAttribute('data-bs-target', '#saveModal');
+                } else if (body !== EMPTY_BODY){
+                    if (!res.createNew) {
+                        btn.target.innerHTML = "Saved";
+                        btn.target.className = BTN_SAVED;
+                        btn.target.setAttribute('title', "This image is already saved")
+                    } else {
+                        btn.target.click();
                     }
                 }
-
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            }).catch(function (error) {
+            console.log(error);
+        });
     }
     //--------------------------------------
     /** make fetch to delete all the photos of the user */
-    const fetchClear = function () {
+    const clearAllImages = function () {
+        const buttons = document.querySelectorAll(".btn-warning");
+        buttons.forEach((e) => { e.innerHTML = "Save"; e.className = BTN_SAVE;
+            e.removeAttribute('title');
+        } );
         fetchAction(CLEAR_URL, 'POST', EMPTY_BODY);
     }
     //--------------------------------------
@@ -581,8 +571,29 @@ const myModule = (() => {
      * of the image saved
      * @param btn - the button delete pressed
      */
-    const fetchDelete = function (btn) {
+    const deleteImage = function (btn) {
+        const buttonsSaved = document.getElementsByClassName(BTN_SAVED);
+        changeAttributes(buttonsSaved, btn.target.id, BTN_SAVE,"Save");
         fetchAction(`${DELETE_URL}${btn.target.id}`, 'DELETE', EMPTY_BODY);
+    }
+    //--------------------------------
+    const showSavedImgBtns = function (){
+        const savedListImg = querySelect('#infos').querySelectorAll('li');
+        const buttons = document.getElementsByClassName(BTN_SAVE);
+        savedListImg.forEach(li => {
+            changeAttributes(buttons, li.id, BTN_SAVED,"Saved" )
+        });
+    }
+    //-----------------------------------
+    const changeAttributes = function (array, id, nameClass, inner) {
+        for(let btn of array){
+            if(id === btn.parentElement.getElementsByTagName('p')[0].innerHTML){
+                btn.innerHTML = inner;
+                btn.setAttribute('class' , nameClass);
+                inner === "Saved" ? btn.setAttribute('title', "This image is already saved")
+                :  btn.removeAttribute('title');
+            }
+        }
     }
     //-----------------------------------
     /**create a new "li" with the image's detail
@@ -592,8 +603,7 @@ const myModule = (() => {
         let btn = createNode('button');
         li.id = img.img_id;
         btn.id = img.img_id;
-        appendNode(li, btn, 'btn btn-danger btnDelete', 'x');
-        btn.addEventListener('click', fetchDelete);
+        appendNode(li, btn, BTN_DELETE, 'x');
         li.appendChild(createLink(img));
         li.innerHTML += "Earth date: " + img.earth_date + ', Sol: ' + img.sol + ', Camera: ' + img.camera;
         querySelect('#infos').appendChild(li);
@@ -613,7 +623,7 @@ const myModule = (() => {
     const slideShow = function () {
         let carousel = querySelect('#innerCarousel');
         let indicator = querySelect('#indicator');
-        carousel.innerHTML = indicator.innerHTML = '';
+        carousel.innerHTML = indicator.innerHTML = NONE;
 
         imgList.foreach(img => {
             carousel.appendChild(createImageCarousel(img.image_src, img.camera, img.date, imgList.indexOf(img)));
@@ -625,7 +635,7 @@ const myModule = (() => {
     /** creates a button to the carousel
      * @param img - the image element
      * @returns {*} - return the button to insert to the indicator DOM element */
-    function createBtn(img) {
+    const createBtn = function (img) {
         let btn = createNode('button');
         btn.setAttribute('data-bs-target', '#carousel');
         if (imgList.indexOf(img) === 0) {
@@ -672,7 +682,7 @@ const myModule = (() => {
         let a = createNode('a');
         a.setAttribute('href', img_src);
         a.setAttribute('target', "_blank")
-        appendNode(divCap, a, '', '');
+        appendNode(divCap, a, NONE, NONE);
 
         let btn = createNode('button');
         appendNode(a, btn, 'btn btn-primary ml-2 mr-2', 'Full size');
@@ -687,7 +697,7 @@ const myModule = (() => {
         slideShow: slideShow,
         resetErrors: resetErrors,
         clearOutput: clearOutput,
-        fetchClear: fetchClear,
+        clearAllImages: clearAllImages,
         fetchAction: fetchAction,
     }
 })();

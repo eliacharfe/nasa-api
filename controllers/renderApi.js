@@ -25,13 +25,13 @@ exports.postSave = (req, res) => {
                     earth_date: req.body.earth_date, sol: req.body.sol, camera: req.body.camera
                 })
                     .then(() => {
-                        return res.json({createNew: "createNew"});
+                        return res.json({createNew: true});
                     })
                     .catch((err) => {
                         catchError(res, err.message, DATABASE_ERR, 400);
                     });
             } else {
-                return res.json({createNew: "notCreateNew"});
+                return res.json({createNew: false});
             }
         })
             .catch((err) => {

@@ -32,7 +32,7 @@ const pwdValidationModule = (() => {
     //----------------------
     const validPassword = function (pwd) {
         return {
-            isValid: pwd.match(/[^]{8,}/),
+            isValid: pwd.match(/[^]{2,}/),
             message: NOT_VALID
         };
     }
