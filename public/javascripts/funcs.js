@@ -536,16 +536,16 @@ const myModule = (() => {
             .then(function (res) {
                 if (res.status === 404)
                     window.location = "/logout";
-                else if (method === 'GET') {
+                else if (method === 'GET') { // extract saved photos
                     querySelect('#infos').innerHTML = NONE;
                     res.forEach(img => {
                         createLi(img);
                     });
                     addListeners(BTN_DELETE);
-                } else if (body === EMPTY_BODY) {
+                } else if (body === EMPTY_BODY) { // if delete a saved image / all saved images clear
                     fetchAction(EXTRACT_URL, 'GET');
-                } else if (body !== EMPTY_BODY){
-                    if (!res.createNew) {
+                } else { // if pressed on a save button
+                    if (!res.createNew) { // if the image is already saved
                         btn.target.innerHTML = "Saved";
                         btn.target.className = BTN_SAVED;
                         btn.target.setAttribute('title', "This image is already saved")
