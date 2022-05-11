@@ -23,7 +23,7 @@ to register (after confirmation) a password (at least 8 character). if you succe
 then you will be registered as a new user and redirected to the login page, where you can <br>
 log in. When the user log in the program will open a unique session to the particular user <br>
 so if the user is saving some images and log out, and later he will log in again he will see <br>
-his saved photos (each user have his own list of save photos). When a user is logged in <br>
+his saved photos (each user have his own list of save photos). When a user is logged in  <br>
 he cannot be able to access the pages of login/register/password pages. <br>
 After the user is logged in the program is executing a connection to NASA API server. The goal is to get mars <br>
 photos according to user inputs which includes a date, a mission and a camera. <br>
@@ -48,5 +48,4 @@ There is a button that open a modal with my personal details.
 </p>
 <h1>Assumptions</h1>
 <p>
-  
 </p>
